@@ -3,7 +3,7 @@
 - Banco de Dados das Receitas.
 
 **Usuário:**
-
+```
 {
     "userimage-url" : String,
     "username" : String,
@@ -12,9 +12,9 @@
     "rt-recipes" : [String] _id das receitas.,
     "save-recipes" : [String] _id das receitas.
 }
-
+```
 **Receitas:**
-
+```
 {
     "recipename" : String,
     "username" : String,
@@ -32,3 +32,4 @@
     "rt-counter" : Int,
     "save-counter" : Int
 }
+```
