@@ -1,0 +1,495 @@
+[
+    {
+        "id": "993e08e525a3d15e",
+        "type": "tab",
+        "label": "Sweet Bites",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "00a2a72770337e59",
+        "type": "http in",
+        "z": "993e08e525a3d15e",
+        "name": "",
+        "url": "/getSweetBitesUser",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 170,
+        "y": 140,
+        "wires": [
+            [
+                "af41971799a9b28d"
+            ]
+        ]
+    },
+    {
+        "id": "af41971799a9b28d",
+        "type": "cloudantplus in",
+        "z": "993e08e525a3d15e",
+        "name": "",
+        "cloudant": "795d52a76d8cf8d5",
+        "database": "sweetbites-user",
+        "service": "_ext_",
+        "search": "_all_",
+        "design": "",
+        "index": "",
+        "x": 440,
+        "y": 140,
+        "wires": [
+            [
+                "20a9d7a1213dc2f6"
+            ]
+        ]
+    },
+    {
+        "id": "20a9d7a1213dc2f6",
+        "type": "http response",
+        "z": "993e08e525a3d15e",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 610,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "7b96e80665e927ba",
+        "type": "http in",
+        "z": "993e08e525a3d15e",
+        "name": "",
+        "url": "postSweetBitesUser",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 180,
+        "y": 340,
+        "wires": [
+            [
+                "66d0aaa89a320513"
+            ]
+        ]
+    },
+    {
+        "id": "2317f0072be40cfb",
+        "type": "http response",
+        "z": "993e08e525a3d15e",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 770,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "6895452824efd0e4",
+        "type": "cloudantplus out",
+        "z": "993e08e525a3d15e",
+        "name": "",
+        "cloudant": "795d52a76d8cf8d5",
+        "database": "sweetbites-user",
+        "service": "_ext_",
+        "payonly": true,
+        "operation": "insert",
+        "x": 600,
+        "y": 340,
+        "wires": [
+            [
+                "2317f0072be40cfb"
+            ]
+        ]
+    },
+    {
+        "id": "66d0aaa89a320513",
+        "type": "switch",
+        "z": "993e08e525a3d15e",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "istype",
+                "v": "array",
+                "vt": "array"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 390,
+        "y": 340,
+        "wires": [
+            [
+                "13e9b5f159dfd30d"
+            ],
+            [
+                "6895452824efd0e4"
+            ]
+        ]
+    },
+    {
+        "id": "13e9b5f159dfd30d",
+        "type": "split",
+        "z": "993e08e525a3d15e",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 470,
+        "y": 220,
+        "wires": [
+            [
+                "6895452824efd0e4"
+            ]
+        ]
+    },
+    {
+        "id": "8c9c87ed66586f8d",
+        "type": "http in",
+        "z": "993e08e525a3d15e",
+        "name": "",
+        "url": "/getSweetBitesRecipes",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 180,
+        "y": 660,
+        "wires": [
+            [
+                "f864fa40ac57e732"
+            ]
+        ]
+    },
+    {
+        "id": "f864fa40ac57e732",
+        "type": "cloudantplus in",
+        "z": "993e08e525a3d15e",
+        "name": "",
+        "cloudant": "795d52a76d8cf8d5",
+        "database": "sweetbites-recipes",
+        "service": "_ext_",
+        "search": "_all_",
+        "design": "",
+        "index": "",
+        "x": 450,
+        "y": 660,
+        "wires": [
+            [
+                "19a00fee26717c0b"
+            ]
+        ]
+    },
+    {
+        "id": "19a00fee26717c0b",
+        "type": "http response",
+        "z": "993e08e525a3d15e",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 610,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "47bf5bb099dabb8c",
+        "type": "http in",
+        "z": "993e08e525a3d15e",
+        "name": "",
+        "url": "postSweetBitesRecipes",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 190,
+        "y": 860,
+        "wires": [
+            [
+                "112a29e4963ac758"
+            ]
+        ]
+    },
+    {
+        "id": "10b2aaa7eefc5a2d",
+        "type": "http response",
+        "z": "993e08e525a3d15e",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 770,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "6bec897c4ae4df8e",
+        "type": "cloudantplus out",
+        "z": "993e08e525a3d15e",
+        "name": "",
+        "cloudant": "795d52a76d8cf8d5",
+        "database": "sweetbites-recipes",
+        "service": "_ext_",
+        "payonly": true,
+        "operation": "insert",
+        "x": 610,
+        "y": 860,
+        "wires": [
+            [
+                "10b2aaa7eefc5a2d"
+            ]
+        ]
+    },
+    {
+        "id": "112a29e4963ac758",
+        "type": "switch",
+        "z": "993e08e525a3d15e",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "istype",
+                "v": "array",
+                "vt": "array"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 390,
+        "y": 860,
+        "wires": [
+            [
+                "d0e6d8649db2a99c"
+            ],
+            [
+                "6bec897c4ae4df8e"
+            ]
+        ]
+    },
+    {
+        "id": "d0e6d8649db2a99c",
+        "type": "split",
+        "z": "993e08e525a3d15e",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 470,
+        "y": 740,
+        "wires": [
+            [
+                "6bec897c4ae4df8e"
+            ]
+        ]
+    },
+    {
+        "id": "e73c3d19c8db2976",
+        "type": "http in",
+        "z": "993e08e525a3d15e",
+        "name": "",
+        "url": "deleteSweetBitesRecipes",
+        "method": "delete",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 200,
+        "y": 1120,
+        "wires": [
+            [
+                "5cbc643e01fb4147"
+            ]
+        ]
+    },
+    {
+        "id": "ab9c03bbf5c769bf",
+        "type": "http response",
+        "z": "993e08e525a3d15e",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 910,
+        "y": 1120,
+        "wires": []
+    },
+    {
+        "id": "04efae3ec3ee4a64",
+        "type": "cloudantplus out",
+        "z": "993e08e525a3d15e",
+        "name": "",
+        "cloudant": "795d52a76d8cf8d5",
+        "database": "sweetbites-recipes",
+        "service": "_ext_",
+        "payonly": true,
+        "operation": "delete",
+        "x": 710,
+        "y": 1120,
+        "wires": [
+            [
+                "ab9c03bbf5c769bf"
+            ]
+        ]
+    },
+    {
+        "id": "e47b6997157fe8f6",
+        "type": "http in",
+        "z": "993e08e525a3d15e",
+        "name": "",
+        "url": "deleteSweetBitesUser",
+        "method": "delete",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 190,
+        "y": 560,
+        "wires": [
+            [
+                "b9577b2c0ca4ab1b"
+            ]
+        ]
+    },
+    {
+        "id": "8b88402f66a7801f",
+        "type": "http response",
+        "z": "993e08e525a3d15e",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 930,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "6f41544b36a5a0d3",
+        "type": "cloudantplus out",
+        "z": "993e08e525a3d15e",
+        "name": "",
+        "cloudant": "795d52a76d8cf8d5",
+        "database": "sweetbites-user",
+        "service": "_ext_",
+        "payonly": true,
+        "operation": "delete",
+        "x": 740,
+        "y": 560,
+        "wires": [
+            [
+                "8b88402f66a7801f"
+            ]
+        ]
+    },
+    {
+        "id": "5cbc643e01fb4147",
+        "type": "switch",
+        "z": "993e08e525a3d15e",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "istype",
+                "v": "array",
+                "vt": "array"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 430,
+        "y": 1120,
+        "wires": [
+            [
+                "e7180ae27f3dfc0c"
+            ],
+            [
+                "04efae3ec3ee4a64"
+            ]
+        ]
+    },
+    {
+        "id": "e7180ae27f3dfc0c",
+        "type": "split",
+        "z": "993e08e525a3d15e",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 510,
+        "y": 960,
+        "wires": [
+            [
+                "04efae3ec3ee4a64"
+            ]
+        ]
+    },
+    {
+        "id": "b9577b2c0ca4ab1b",
+        "type": "switch",
+        "z": "993e08e525a3d15e",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "istype",
+                "v": "array",
+                "vt": "array"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 410,
+        "y": 520,
+        "wires": [
+            [
+                "1db83659b96968e7"
+            ],
+            [
+                "6f41544b36a5a0d3"
+            ]
+        ]
+    },
+    {
+        "id": "1db83659b96968e7",
+        "type": "split",
+        "z": "993e08e525a3d15e",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 490,
+        "y": 400,
+        "wires": [
+            [
+                "6f41544b36a5a0d3"
+            ]
+        ]
+    },
+    {
+        "id": "795d52a76d8cf8d5",
+        "type": "cloudantplus",
+        "host": "https://f1c0dcf9-5075-4061-a1f8-2f4ca596058a-bluemix.cloudantnosqldb.appdomain.cloud",
+        "name": "Brutal",
+        "useapikey": true
+    }
+]
