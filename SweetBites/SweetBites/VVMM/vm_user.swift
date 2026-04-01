@@ -8,6 +8,22 @@
 import Foundation
 import Combine
 
+enum APIEndpointUser {
+    case get, post, put, delete
+    
+    private var baseURL: String { "http://127.0.0.1:1880" }
+    private var baseName: String { "SweetBitesUser" }
+    
+    var url: URL? {
+        switch self {
+            case .get:  return URL(string: "\(baseURL)/get\(baseName)")
+            case .post: return URL(string: "\(baseURL)/post\(baseName)")
+            case .put:  return URL(string: "\(baseURL)/put\(baseName)")
+            case .delete: return URL(string: "\(baseURL)/delete\(baseName)")
+        }
+    }
+}
+
 class UserViewModel: ObservableObject {
     @Published var users: [User] = []
     
@@ -56,21 +72,5 @@ class UserViewModel: ObservableObject {
                 self?.fetch()
             }, receiveValue: { _ in })
             .store(in: &cancellables)
-    }
-}
-
-enum APIEndpointUser {
-    case get, post, put, delete
-    
-    private var baseURL: String { "http://127.0.0.1:1880" }
-    private var baseName: String { "SweetBitesUser" }
-    
-    var url: URL? {
-        switch self {
-            case .get:  return URL(string: "\(baseURL)/get\(baseName)")
-            case .post: return URL(string: "\(baseURL)/post\(baseName)")
-            case .put:  return URL(string: "\(baseURL)/put\(baseName)")
-            case .delete: return URL(string: "\(baseURL)/delete\(baseName)")
-        }
     }
 }
