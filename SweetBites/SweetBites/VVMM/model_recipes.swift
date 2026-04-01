@@ -9,6 +9,67 @@ import Foundation
 import Combine
 
 struct RecipesService {
+    
+    func fetchRecipes(url: URL) -> AnyPublisher<[Recipes], Error> {
+        return URLSession.shared.dataTaskPublisher(for: url)
+            .map(\.data)
+            .decode(type: [Recipes].self, decoder: JSONDecoder())
+            .eraseToAnyPublisher()
+    }
+
+    func addRecipe(recipe: Recipes, url: URL) -> AnyPublisher<Data, Error> {
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        do {
+            request.httpBody = try JSONEncoder().encode(recipe)
+        } catch {
+            return Fail(error: error).eraseToAnyPublisher()
+        }
+        
+        return URLSession.shared.dataTaskPublisher(for: request)
+            .map(\.data)
+            .mapError { $0 as Error }
+            .eraseToAnyPublisher()
+    }
+
+    func updateRecipe(recipe: Recipes, url: URL) -> AnyPublisher<Data, Error> {
+        let updateURL = url.appendingPathComponent(recipe.id)
+        var request = URLRequest(url: updateURL)
+        request.httpMethod = "PUT"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        do {
+            request.httpBody = try JSONEncoder().encode(recipe)
+        } catch {
+            return Fail(error: error).eraseToAnyPublisher()
+        }
+        
+        return URLSession.shared.dataTaskPublisher(for: request)
+            .map(\.data)
+            .mapError { $0 as Error }
+            .eraseToAnyPublisher()
+    }
+    
+    func deleteRecipe(recipe: Recipes, url: URL) -> AnyPublisher<Data, Error> {
+        let deleteURL = url.appendingPathComponent(recipe.id)
+        var request = URLRequest(url: deleteURL)
+        
+        request.httpMethod = "DELETE"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        do {
+            request.httpBody = try JSONEncoder().encode(recipe)
+        } catch {
+            return Fail(error: error).eraseToAnyPublisher()
+        }
+        
+        return URLSession.shared.dataTaskPublisher(for: request)
+            .map(\.data)
+            .mapError { $0 as Error }
+            .eraseToAnyPublisher()
+    }
 }
 
 struct Recipes: Codable, Identifiable {
