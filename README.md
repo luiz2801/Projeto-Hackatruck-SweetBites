@@ -5,31 +5,30 @@
 **Usuário:**
 ```
 {
-    "userimage-url" : String,
-    "username" : String,
-    "userdescription" : String,
-    "user-recipes" : [String] -> _id das receitas.,
-    "rt-recipes" : [String] _id das receitas.,
-    "save-recipes" : [String] _id das receitas.
+    "user_name" : String,
+    "user_image_url" : String,
+    "user_description" : String,
+    "user_recipes" : [String] -> _id das receitas.,
+    "save_recipes" : [String] _id das receitas.
 }
 ```
 **Receitas:**
 ```
 {
-    "recipename" : String,
-    "username" : String,
-    "recipeimage-url" : String,
+    "recipe_name" : String,
+    "user_name" : String,
+    "recipe_image_url" : String,
+    "recipe_description": String,
     "ingredients" : [String],
-    "preparation-method" : String,
-    "preparation-time" : Int,
-    "category" : [Int],
+    "preparation_method" : String,
+    "preparation_time" : Int, 
+    "category" : [Int], 
     "upvotes" : Int,
     "downvote" : Int,
     "comments" : {
-        "user-id" : "String" -> _id do usuário.,
+        "user_id" : "String" -> _id do usuário.,
         "comment" : String
     },
-    "rt-counter" : Int,
-    "save-counter" : Int
+    "save_counter" : Int
 }
 ```
