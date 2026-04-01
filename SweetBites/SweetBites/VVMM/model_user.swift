@@ -9,6 +9,66 @@ import Foundation
 import Combine
 
 struct UserService {
+    func fetchUsers(url: URL) -> AnyPublisher<[User], Error> {
+        return URLSession.shared.dataTaskPublisher(for: url)
+            .map(\.data)
+            .decode(type: [User].self, decoder: JSONDecoder())
+            .eraseToAnyPublisher()
+    }
+
+    func addUser(user: User, url: URL) -> AnyPublisher<Data, Error> {
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        do {
+            request.httpBody = try JSONEncoder().encode(user)
+        } catch {
+            return Fail(error: error).eraseToAnyPublisher()
+        }
+        
+        return URLSession.shared.dataTaskPublisher(for: request)
+            .map(\.data)
+            .mapError { $0 as Error }
+            .eraseToAnyPublisher()
+    }
+
+    func updateUser(user: User, url: URL) -> AnyPublisher<Data, Error> {
+        let updateURL = url.appendingPathComponent(user.id)
+        var request = URLRequest(url: updateURL)
+        request.httpMethod = "PUT"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        do {
+            request.httpBody = try JSONEncoder().encode(user)
+        } catch {
+            return Fail(error: error).eraseToAnyPublisher()
+        }
+        
+        return URLSession.shared.dataTaskPublisher(for: request)
+            .map(\.data)
+            .mapError { $0 as Error }
+            .eraseToAnyPublisher()
+    }
+    
+    func deleteUser(user: User, url: URL) -> AnyPublisher<Data, Error> {
+            let deleteURL = url.appendingPathComponent(user.id)
+            var request = URLRequest(url: deleteURL)
+            
+            request.httpMethod = "DELETE"
+            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            
+            do {
+                request.httpBody = try JSONEncoder().encode(user)
+            } catch {
+                return Fail(error: error).eraseToAnyPublisher()
+            }
+            
+            return URLSession.shared.dataTaskPublisher(for: request)
+                .map(\.data)
+                .mapError { $0 as Error }
+                .eraseToAnyPublisher()
+        }
 }
 
 struct User: Codable, Identifiable {
