@@ -8,15 +8,24 @@
 import SwiftUI
 
 struct AIChatUIView: View {
+    @StateObject private var geminiModel = modelo()
+    
     var body: some View {
         ZStack{
             Color.brancoFumaca
                 .ignoresSafeArea()
-            ScrollView{
-                VStack{
-                    Text("AI CHAT")
-                        .font(.title)
-                        .bold()
+            
+            VStack(spacing: 0){
+                Text("CHEF IA")
+                    .font(.title3)
+                    .bold()
+                    .padding(.vertical, 10)
+                ScrollViewReader{ proxy in
+                    ScrollView{
+                        VStack(spacing: 15){
+                            
+                        }
+                    }
                 }
             }
         }
