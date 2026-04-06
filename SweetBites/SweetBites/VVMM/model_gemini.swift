@@ -59,4 +59,10 @@ class modelo: ObservableObject {
             }
         }
     }
+
+        func limparChat() {
+            messages.removeAll()
+            input = ""
+        }
+    
 }
