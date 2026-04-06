@@ -7,8 +7,22 @@
 
 import SwiftUI
 import GoogleGenerativeAI
+import Combine
 
-struct modelo{
+// 1. Adicionado o molde da Mensagem que estava faltando
+struct Mensagem: Identifiable {
+    let id = UUID()
+    let text: String
+    let isUser: Bool
+}
+
+// 2. Mudou de 'struct' para 'class', e adicionou ObservableObject
+class modelo: ObservableObject {
+    
+    // 3. Adicionado as variáveis que estavam dando erro de "Cannot find in scope"
+    @Published var input: String = ""
+    @Published var messages: [Mensagem] = []
+    
     let model = GenerativeModel(
         name: "gemini-2.5-flash",
         apiKey: APIKey.default,
@@ -28,8 +42,8 @@ struct modelo{
         // 2. Inicia uma tarefa assíncrona para não travar a interface
         Task {
             do {
-                // Envia o prompt para o Gemini com uma instrução de "persona" (Tutor)
-                let response = try await model.generateContent("Você é um tutor de idiomas. Responda brevemente a isto: \(userText)")
+                // CORREÇÃO: Tirei o "tutor de idiomas" que estava conflitando com o professor de gastronomia
+                let response = try await model.generateContent(userText)
                 
                 if let responseText = response.text {
                     // Retorna para a Main Thread para atualizar a interface com a resposta
@@ -40,10 +54,9 @@ struct modelo{
             } catch {
                 // Tratamento básico de erro de conexão ou API
                 await MainActor.run {
-                    messages.append(Mensagem(text: "Erro: Não consegui conectar com o tutor.", isUser: false))
+                    messages.append(Mensagem(text: "Erro: Não consegui conectar com o professor.", isUser: false))
                 }
             }
         }
     }
-
 }
