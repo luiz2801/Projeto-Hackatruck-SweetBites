@@ -53,6 +53,8 @@ class modelo: ObservableObject {
                 }
             } catch {
                 // Tratamento básico de erro de conexão ou API
+                print(" ERRO DO GEMINI: \(error)")
+                print(" DESCRIÇÃO: \(error.localizedDescription)")
                 await MainActor.run {
                     messages.append(Mensagem(text: "Erro: Não consegui conectar com o professor.", isUser: false))
                 }
