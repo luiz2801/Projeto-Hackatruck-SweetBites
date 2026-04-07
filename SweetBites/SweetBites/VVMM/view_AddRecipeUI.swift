@@ -15,6 +15,7 @@ struct AddRecipeUIView: View {
     @State private var nomeReceita: String = ""
     @State private var ingredientes: String = ""
     @State private var modoPreparo: String = ""
+    @State private var recipeDescription: String = ""
     @State private var urlImagemReceita: String = "" // NOVO: Para receber a URL em texto
     @State private var categoriaDoce: Bool = false
     @State private var categoriaRefeicao: Bool = false
@@ -155,6 +156,23 @@ struct AddRecipeUIView: View {
                 .padding(.horizontal, 20)
                 .padding(.top, 10)
                 
+                // MARK: - Descrição
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Descrição")
+                        .font(.caption)
+                        .bold()
+                        .foregroundStyle(.gray)
+                    
+                    TextEditor(text: $recipeDescription)
+                        .frame(minHeight: 120)
+                        .padding(10)
+                        .background(Color.white)
+                        .cornerRadius(12)
+                        .shadow(color: .gray.opacity(0.1), radius: 3)
+                }
+                .padding(.horizontal, 20)
+                .padding(.top, 10)
+                
                 // MARK: - Categorias e Salvar
                 VStack(alignment: .center, spacing: 8) {
                     Text("Categoria")
@@ -216,7 +234,7 @@ struct AddRecipeUIView: View {
             recipe_name: nomeReceita,
             user_name: "Chef",
             recipe_image_url: urlFinal, // <-- Inserindo a URL ou nil aqui
-            recipe_description: "Nova receita feita no SweetBites",
+            recipe_description: recipeDescription,
             ingredients: arrayIngredientes,
             preparation_method: modoPreparo,
             preparation_time: 40,
