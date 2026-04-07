@@ -4,16 +4,27 @@
 //
 //  Created by Turma01-16 on 01/04/26.
 //
-
 import SwiftUI
 import GoogleGenerativeAI
+import Foundation
+import Combine // <--- ADICIONE ESTA LINHA
 
-struct modelo{
-    let model = GenerativeModel(
-        name: "gemini-2.5-flash",
+struct Mensagem: Identifiable {
+    let id = UUID()
+    let text: String
+    let isUser: Bool
+}
+
+class ChatViewModel: ObservableObject { // <--- Garanta que é uma Class
+    @Published var messages: [Mensagem] = []
+    @Published var input: String = ""
+    @Published var isTyping: Bool = false
+    
+    private let model = GenerativeModel(
+        name: "gemini-1.5-flash",
         apiKey: APIKey.default,
         systemInstruction: ModelContent(role: "system", parts: [
-            .text("Você é um professor de gastronomia.")
+            .text("Você é o Chef SweetBites, um professor de gastronomia experiente e amigável. Seu objetivo é ajudar os usuários com receitas e técnicas culinárias.")
         ])
     )
     
@@ -21,29 +32,25 @@ struct modelo{
         let userText = input
         guard !userText.isEmpty else { return }
         
-        // 1. Atualiza a UI local com a mensagem do usuário imediatamente
         messages.append(Mensagem(text: userText, isUser: true))
-        input = "" // Limpa o campo de entrada
+        input = ""
+        isTyping = true
         
-        // 2. Inicia uma tarefa assíncrona para não travar a interface
         Task {
             do {
-                // Envia o prompt para o Gemini com uma instrução de "persona" (Tutor)
-                let response = try await model.generateContent("Você é um tutor de idiomas. Responda brevemente a isto: \(userText)")
-                
+                let response = try await model.generateContent(userText)
                 if let responseText = response.text {
-                    // Retorna para a Main Thread para atualizar a interface com a resposta
                     await MainActor.run {
                         messages.append(Mensagem(text: responseText, isUser: false))
+                        isTyping = false
                     }
                 }
             } catch {
-                // Tratamento básico de erro de conexão ou API
                 await MainActor.run {
-                    messages.append(Mensagem(text: "Erro: Não consegui conectar com o tutor.", isUser: false))
+                    messages.append(Mensagem(text: "Erro ao conectar com o Chef.", isUser: false))
+                    isTyping = false
                 }
             }
         }
     }
-
 }
