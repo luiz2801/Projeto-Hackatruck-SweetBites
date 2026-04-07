@@ -17,6 +17,7 @@ struct AddRecipeUIView: View {
     @State private var categoriaLanche: Bool = false
     @State private var fotoSelecionada: PhotosPickerItem? = nil
     @State private var imagemReceita: Image? = nil
+    @StateObject private var recipesViewModel = RecipesViewModel()
     var body: some View {
         ZStack{
             Color.brancoFumaca
@@ -131,8 +132,8 @@ struct AddRecipeUIView: View {
                         
                     }
                     
-                    SaveRecipeButton(titulo: "Salvar"){
-                        print("Receita Salva")
+                    SaveRecipeButton(titulo: "Salvar Receita") {
+                        salvarNovaReceita()
                     }
                 }
                 
@@ -140,6 +141,53 @@ struct AddRecipeUIView: View {
             }
         }
     }
+    
+        private func salvarNovaReceita() {
+            // Ingredientes
+            let arrayIngredientes = ingredientes.components(separatedBy: "\n").filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
+            
+            // Categorias
+            var categoriasEscolhidas: [Int] = []
+            if categoriaDoce { categoriasEscolhidas.append(1) }
+            if categoriaRefeicao { categoriasEscolhidas.append(2) }
+            if categoriaLanche { categoriasEscolhidas.append(3) }
+            
+            // Objeto
+            let novaReceita = Recipes(
+                id: UUID().uuidString,
+                rev: nil,
+                recipe_name: nomeReceita,
+                user_name: "Chef",
+                recipe_image_url: nil,
+                recipe_description: "Nova receita feita no SweetBites",
+                ingredients: arrayIngredientes,
+                preparation_method: modoPreparo,
+                preparation_time: 40,
+                category: categoriasEscolhidas,
+                upvote: 0,
+                downvote: 0,
+                comments: [],
+                save_counter: 0
+            )
+            
+            recipesViewModel.post(recipe: novaReceita)
+            print("A receita '\(nomeReceita)' foi enviada para o banco de dados!")
+            
+            limparCampos()
+        }
+        
+        private func limparCampos() {
+            nomeReceita = ""
+            ingredientes = ""
+            modoPreparo = ""
+            categoriaDoce = false
+            categoriaRefeicao = false
+            categoriaLanche = false
+            imagemReceita = nil
+            fotoSelecionada = nil
+        }
+    
+    
 }
 
 #Preview {
