@@ -8,15 +8,16 @@
 import SwiftUI
 
 struct ProfileUIView: View {
+    @StateObject private var viewModel = UserViewModel()
     var body: some View {
-        ZStack{
-            Color.brancoFumaca
-                .ignoresSafeArea()
-            ScrollView{
-                VStack{
-                    Text("Perfil")
-                        .font(.title)
-                        .bold()
+        NavigationStack{
+            ZStack{
+                Color.brancoFumaca
+                    .ignoresSafeArea()
+                ScrollView{
+                    VStack(){
+                        Text("teste")
+                    }
                 }
             }
         }
