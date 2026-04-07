@@ -10,6 +10,7 @@ import Combine
 
 struct RecipesService {
     
+    
     func fetchRecipes(url: URL) -> AnyPublisher<[Recipes], Error> {
         return URLSession.shared.dataTaskPublisher(for: url)
             .map(\.data)

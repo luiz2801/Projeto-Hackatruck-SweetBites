@@ -17,6 +17,37 @@ struct ProfileUIView: View {
                     Text("Perfil")
                         .font(.title)
                         .bold()
+                    Text("SweetBites")
+                        .font(.title)
+                        .bold()
+                    HStack{
+                        Image("Eu")
+                            .resizable()
+                            .clipShape(Circle())
+                            .frame(width: 120, height: 120)
+                            .padding()
+                        Spacer()
+                        Text("Maria Rita")
+                            .padding()
+                       
+                    }
+                    Text("Receita")
+                    Rectangle()
+                        .frame(width: 300, height: 100)
+                    Text("Modo de preparo")
+                    Rectangle()
+                        .frame(width: 300, height: 100)
+                    Text("Categoria: Doce")
+                    Text("Receita")
+                    Rectangle()
+                        .frame(width: 300, height: 100)
+                    Text("Modo de preparo")
+                    Rectangle()
+                        .frame(width: 300, height: 100)
+                    Text("Categoria: Refeição")
+
+                    
+                
                 }
             }
         }
