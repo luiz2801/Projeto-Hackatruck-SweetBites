@@ -7,36 +7,40 @@
 
 import SwiftUI
 
+
 struct FeedUIView: View {
-    // 1. Instancia o ViewModel
     @StateObject private var viewModel = RecipesViewModel()
     
     var body: some View {
-        ZStack{
-            // Assumindo que Color.brancoFumaca está definido nas suas extensões
-            Color.brancoFumaca
-                .ignoresSafeArea()
-            
-            ScrollView{
-                VStack(spacing: 16){
-                    
-                    // Mostra um indicador de carregamento se a lista estiver vazia
-                    if viewModel.recipes.isEmpty {
-                        ProgressView("Carregando receitas...")
-                            .padding(.top, 50)
-                    } else {
-                        // 3. Itera sobre as receitas e cria um card para cada uma
-                        ForEach(viewModel.recipes) { recipe in
-                            RecipeCardView(recipe: recipe)
+        // Envolve tudo em um NavigationStack para permitir transições de tela
+        NavigationStack {
+            ZStack{
+                Color.brancoFumaca
+                    .ignoresSafeArea()
+                
+                ScrollView{
+                    VStack(spacing: 16){
+                        if viewModel.recipes.isEmpty {
+                            ProgressView("Carregando receitas...")
+                                .padding(.top, 50)
+                        } else {
+                            ForEach(viewModel.recipes) { recipe in
+                                // NavigationLink transforma o card em um botão clicável
+                                NavigationLink(destination: view_recipe(recipe: recipe)) {
+                                    RecipeCardView(recipe: recipe)
+                                }
+                                // Remove o estilo de botão padrão que deixa o texto azul
+                                .buttonStyle(PlainButtonStyle())
+                            }
                         }
                     }
+                    .padding()
                 }
-                .padding()
             }
-        }
-        // 2. Chama a função fetch() quando a view aparecer
-        .onAppear {
-            viewModel.fetch()
+            .navigationTitle("Feed de Receitas") // Título no topo do Feed
+            .onAppear {
+                viewModel.fetch()
+            }
         }
     }
 }
