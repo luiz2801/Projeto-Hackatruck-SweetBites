@@ -21,7 +21,7 @@ class ChatViewModel: ObservableObject { // <--- Garanta que é uma Class
     @Published var isTyping: Bool = false
     
     private let model = GenerativeModel(
-        name: "gemini-1.5-flash",
+        name: "gemini-2.5-flash",
         apiKey: APIKey.default,
         systemInstruction: ModelContent(role: "system", parts: [
             .text("Você é o Chef SweetBites, um professor de gastronomia experiente e amigável. Seu objetivo é ajudar os usuários com receitas e técnicas culinárias.")

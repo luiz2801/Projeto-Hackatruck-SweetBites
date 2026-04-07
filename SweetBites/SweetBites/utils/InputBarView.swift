@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct InputBarView: View {
-    @ObservedObject var geminiModel: modelo
+    @ObservedObject var geminiModel: ChatViewModel
     
     var body: some View {
         HStack(spacing: 12) {
