@@ -110,7 +110,7 @@ struct ProfileUIView: View {
                             
                         } else {
                             ForEach(minhasReceitas) { receita in
-                                NavigationLink(destination: view_recipe(recipe: receita)) {
+                                NavigationLink(destination: RecipeView(recipe: receita)) {
                                     HStack(alignment: .top, spacing: 15) {
                                         Rectangle()
                                             .fill(Color.gray.opacity(0.3))

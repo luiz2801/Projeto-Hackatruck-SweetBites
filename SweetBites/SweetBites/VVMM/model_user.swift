@@ -52,8 +52,7 @@ struct UserService {
     }
     
     func deleteUser(user: User, url: URL) -> AnyPublisher<Data, Error> {
-            let deleteURL = url.appendingPathComponent(user.id)
-            var request = URLRequest(url: deleteURL)
+            var request = URLRequest(url: url)
             
             request.httpMethod = "DELETE"
             request.addValue("application/json", forHTTPHeaderField: "Content-Type")

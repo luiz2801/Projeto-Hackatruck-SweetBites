@@ -54,14 +54,15 @@ struct RecipesService {
     }
     
     func deleteRecipe(recipe: Recipes, url: URL) -> AnyPublisher<Data, Error> {
-        let deleteURL = url.appendingPathComponent(recipe.id)
-        var request = URLRequest(url: deleteURL)
+        var request = URLRequest(url: url)
         
         request.httpMethod = "DELETE"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
         do {
-            request.httpBody = try JSONEncoder().encode(recipe)
+            let jsonData = try JSONEncoder().encode(recipe)
+            request.httpBody = jsonData
+
         } catch {
             return Fail(error: error).eraseToAnyPublisher()
         }
