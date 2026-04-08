@@ -7,8 +7,15 @@
 
 import SwiftUI
 
-struct view_recipe: View {
+struct RecipeView: View {
+    // Adicionando a ViewModel para suportar as ações de deletar e editar
+    @StateObject var viewModel = RecipesViewModel()
+    @Environment(\.dismiss) var dismiss
+    
     let recipe: Recipes
+    
+    // Variável em hardcode solicitada para teste
+    let logged_user_name = "Chef"
     
     var body: some View {
         ScrollView {
@@ -81,7 +88,7 @@ struct view_recipe: View {
                                     Image(systemName: "circle.fill")
                                         .font(.system(size: 6))
                                         .padding(.top, 8)
-                                        .foregroundColor(.orange) // Cor de destaque do app
+                                        .foregroundColor(.orange)
                                     Text(ingredient)
                                         .font(.body)
                                 }
@@ -106,5 +113,31 @@ struct view_recipe: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+        // Adicionando o botão de três pontos na Toolbar
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                // Validação: Só aparece se o user_name for igual ao logged_user_name
+                if recipe.user_name == logged_user_name {
+                    Menu {
+                        Button(action: {
+                            // Lógica para abrir tela de edição
+                            print("Editar selecionado")
+                        }) {
+                            Label("Editar", systemImage: "pencil")
+                        }
+                        
+                        Button(role: .destructive, action: {
+                            viewModel.delete(recipe: recipe)
+                            dismiss() // Volta para a tela anterior após deletar
+                        }) {
+                            Label("Deletar", systemImage: "trash")
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
+                            .font(.system(size: 18))
+                    }
+                }
+            }
+        }
     }
 }

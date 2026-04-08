@@ -26,7 +26,7 @@ struct FeedUIView: View {
                         } else {
                             ForEach(viewModel.recipes) { recipe in
                                 // NavigationLink transforma o card em um botão clicável
-                                NavigationLink(destination: view_recipe(recipe: recipe)) {
+                                NavigationLink(destination: RecipeView(recipe: recipe)) {
                                     RecipeCardView(recipe: recipe)
                                 }
                                 // Remove o estilo de botão padrão que deixa o texto azul
@@ -35,6 +35,9 @@ struct FeedUIView: View {
                         }
                     }
                     .padding()
+                }
+                .refreshable {
+                    viewModel.fetch()
                 }
             }
             .navigationTitle("Feed de Receitas") // Título no topo do Feed

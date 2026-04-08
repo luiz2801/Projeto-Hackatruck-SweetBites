@@ -11,7 +11,7 @@ enum APIEndpointUsers {
     case get, post, put, delete
     
     // Mantendo o mesmo IP e porta do seu arquivo de receitas
-    private var baseURL: String { "http://192.168.128.15:1880" }
+    private var baseURL: String { "http://10.141.196.157:1880" }
     private var baseName: String { "SweetBitesUsers" } // Ajuste se o endpoint no Node-RED for diferente
     
     var url: URL? {
