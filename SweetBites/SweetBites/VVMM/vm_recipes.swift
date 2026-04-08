@@ -11,7 +11,7 @@ import Combine
 enum APIEndpointRecipes {
     case get, post, put, delete
     
-    private var baseURL: String { "http://127.0.0.1:1880" }
+    private var baseURL: String { "http://192.168.128.15:1880" }
     private var baseName: String { "SweetBitesRecipes" }
     
     var url: URL? {

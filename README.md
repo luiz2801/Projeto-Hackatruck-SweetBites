@@ -32,3 +32,9 @@
     "save_counter" : Int
 }
 ```
+
+TO-DO:
+
+- Tem que adicionar um modo do usuário deletar e modificar as suas receitas. - Luiz.
+- Adicionar o campo tempo de preparo ao AddRecipesUI. - Júlio. 
+- Adicionar Upvote, Downvote e Comentar.
