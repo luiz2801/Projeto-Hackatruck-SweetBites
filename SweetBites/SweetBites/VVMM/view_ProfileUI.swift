@@ -160,8 +160,7 @@ struct ProfileUIView: View {
     
     // MARK: - Mock das receitas do Chef
     // Atualizado com os IDs e nomes das receitas que você enviou
-    @State private var minhasReceitas: [Recipes] = recipesViewModel.fetch()
-        
+    @State private var minhasReceitas: [Recipes] = []
     
     
     
@@ -256,6 +255,7 @@ struct ProfileUIView: View {
                                     .font(.subheadline)
                                     .foregroundColor(.gray)
                             }
+                            
                             .frame(maxWidth: .infinity)
                             .padding(.top, 20)
                             
@@ -305,8 +305,14 @@ struct ProfileUIView: View {
             }
         }
         .onAppear {
-            userViewModel.fetch()
-        }
+                    userViewModel.fetch()
+                    // Inicia a busca das receitas no Node-RED
+                    recipesViewModel.fetch()
+                }
+                // Faz a atribuição correta sempre que o ViewModel for atualizado
+                .onReceive(recipesViewModel.$recipes) { novasReceitas in
+                    self.minhasReceitas = novasReceitas
+                }
     }
 }
 
