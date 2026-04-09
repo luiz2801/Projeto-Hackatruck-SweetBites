@@ -2,34 +2,42 @@
 //  FeedUIView.swift
 //  SweetBites
 //
-//  Created by Turma01-9 on 01/04/26.
-//
 
 import SwiftUI
-
 
 struct FeedUIView: View {
     @StateObject private var viewModel = RecipesViewModel()
     
+    // Propriedade computada para ordenar as receitas do maior para o menor saldo de votos
+    var sortedRecipes: [Recipes] {
+        viewModel.recipes.sorted {
+            let scoreA = ($0.upvote ?? 0) - ($0.downvote ?? 0)
+            let scoreB = ($1.upvote ?? 0) - ($1.downvote ?? 0)
+            return scoreA > scoreB
+        }
+    }
+    
     var body: some View {
-        // Envolve tudo em um NavigationStack para permitir transições de tela
         NavigationStack {
-            ZStack{
-                Color.brancoFumaca
+            ZStack {
+                Color.brancoFumaca // Certifique-se de que essa cor esteja no seu Asset/Extension
                     .ignoresSafeArea()
                 
-                ScrollView{
-                    VStack(spacing: 16){
+                ScrollView {
+                    VStack(spacing: 16) {
                         if viewModel.recipes.isEmpty {
                             ProgressView("Carregando receitas...")
                                 .padding(.top, 50)
                         } else {
-                            ForEach(viewModel.recipes) { recipe in
-                                // NavigationLink transforma o card em um botão clicável
+                            // Usando o array ordenado aqui
+                            ForEach(sortedRecipes) { recipe in
                                 NavigationLink(destination: RecipeView(recipe: recipe)) {
-                                    RecipeCardView(recipe: recipe)
+                                    RecipeCardView(
+                                        recipe: recipe,
+                                        onUpvote: { vote(recipe: recipe, isUpvote: true) },
+                                        onDownvote: { vote(recipe: recipe, isUpvote: false) }
+                                    )
                                 }
-                                // Remove o estilo de botão padrão que deixa o texto azul
                                 .buttonStyle(PlainButtonStyle())
                             }
                         }
@@ -40,17 +48,38 @@ struct FeedUIView: View {
                     viewModel.fetch()
                 }
             }
-            .navigationTitle("Feed de Receitas") // Título no topo do Feed
+            .navigationTitle("Feed de Receitas")
             .onAppear {
                 viewModel.fetch()
             }
         }
+    }
+    
+    // Função para lidar com os votos e atualizar a API
+    private func vote(recipe: Recipes, isUpvote: Bool) {
+        var updatedRecipe = recipe
+        
+        if isUpvote {
+            updatedRecipe.upvote = (recipe.upvote ?? 0) + 1
+        } else {
+            updatedRecipe.downvote = (recipe.downvote ?? 0) + 1
+        }
+        
+        // Atualiza a UI imediatamente (Optimistic UI update) para parecer instantâneo ao usuário
+        if let index = viewModel.recipes.firstIndex(where: { $0.id == recipe.id }) {
+            viewModel.recipes[index] = updatedRecipe
+        }
+        
+        // Envia a atualização para o backend
+        viewModel.put(recipe: updatedRecipe)
     }
 }
 
 // Subcomponente para exibir cada receita individualmente
 struct RecipeCardView: View {
     let recipe: Recipes
+    var onUpvote: () -> Void    // Ação para o upvote
+    var onDownvote: () -> Void  // Ação para o downvote
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -103,10 +132,25 @@ struct RecipeCardView: View {
                 let downvotes = recipe.downvote ?? 0
                 let totalVotes = upvotes - downvotes
                 
-                HStack(spacing: 4) {
-                    Image(systemName: "arrow.up.heart.fill")
-                        .foregroundColor(.red)
+                HStack(spacing: 12) {
+                    // Botão de Upvote (Usando onTapGesture para não conflitar com o NavigationLink)
+                    Image(systemName: "arrow.up.circle.fill")
+                        .foregroundColor(.green)
+                        .font(.title3)
+                        .onTapGesture {
+                            onUpvote()
+                        }
+                    
                     Text("\(totalVotes)")
+                        .fontWeight(.bold)
+                    
+                    // Botão de Downvote
+                    Image(systemName: "arrow.down.circle.fill")
+                        .foregroundColor(.red)
+                        .font(.title3)
+                        .onTapGesture {
+                            onDownvote()
+                        }
                 }
                 
                 Spacer()

@@ -11,6 +11,7 @@ struct ProfileUIView: View {
     
     @StateObject private var userViewModel = UserViewModel()
     @StateObject private var recipesViewModel = RecipesViewModel()
+    let usr: String = "Chef"
     
     // MARK: - Listagem de Receitas
     @State private var minhasReceitas: [Recipes] = []
@@ -73,12 +74,13 @@ struct ProfileUIView: View {
                         // MARK: - Cabeçalho Minhas Receitas
                         HStack {
                             Text("Minhas Receitas")
-                                .font(.title3)
+                                .font( .title3)
                                 .bold()
                             
                             Spacer()
                             
-                            NavigationLink(destination: Text("AddRecipeUIView")) { // Substitua pela sua View de adicionar
+                            // Altere 'AddRecipeView()' para o nome da sua tela de criação
+                            NavigationLink(destination: Text("Tela de Adicionar Receita")) {
                                 HStack {
                                     Image(systemName: "plus")
                                     Text("Nova")
@@ -159,12 +161,13 @@ struct ProfileUIView: View {
             }
         }
         .onAppear {
-            userViewModel.fetch()
-            recipesViewModel.fetch()
-        }
-        .onReceive(recipesViewModel.$recipes) { novasReceitas in
-            self.minhasReceitas = novasReceitas
-        }
+                    userViewModel.fetch()
+                    recipesViewModel.fetch()
+                }
+                .onReceive(recipesViewModel.$recipes) { novasReceitas in
+                    // Filtra o array para manter apenas as receitas onde o user_name bate com a variável usr
+                    self.minhasReceitas = novasReceitas.filter { $0.user_name == self.usr }
+                }
     }
 }
 
