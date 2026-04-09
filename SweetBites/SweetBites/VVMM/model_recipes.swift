@@ -85,8 +85,8 @@ struct Recipes: Codable, Identifiable {
     let preparation_method: String?
     let preparation_time: Int? // O tempo é em minutos.
     let category: [Int]? //Uma receita pode ser categorizada como refeição e um lanche, por exemplo
-    var upvote: Int? // O que vai ser exibido é o delta de upvote e downvote.
-    var downvote: Int?
+    var upvote: [String]? // O que vai ser exibido é o delta de upvote e downvote.
+    var downvote: [String]?
     let comments: [Comments]?
     let save_counter: Int?
 
