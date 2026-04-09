@@ -239,8 +239,8 @@ struct AddRecipeUIView: View {
             preparation_method: modoPreparo,
             preparation_time: 40,
             category: categoriasEscolhidas,
-            upvote: 0,
-            downvote: 0,
+            upvote: [""],
+            downvote: [""],
             comments: [],
             save_counter: 0
         )
