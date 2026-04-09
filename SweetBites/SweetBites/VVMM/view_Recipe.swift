@@ -7,19 +7,20 @@
 
 import SwiftUI
 
+
 struct RecipeView: View {
-    // Adicionando a ViewModel para suportar as ações de deletar e editar
     @StateObject var viewModel = RecipesViewModel()
     @Environment(\.dismiss) var dismiss
     
-    let recipe: Recipes
+    @State private var showingEditSheet = false
     
-    // Variável em hardcode solicitada para teste
+    let recipe: Recipes
     let logged_user_name = "Chef"
     
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
+                // ... (Seu código da imagem, cabeçalho, descrição, etc. continua igual) ...
                 
                 // 1. Imagem de Destaque
                 if let imageUrlString = recipe.recipe_image_url, let url = URL(string: imageUrlString) {
@@ -45,44 +46,29 @@ struct RecipeView: View {
                 }
                 
                 VStack(alignment: .leading, spacing: 20) {
-                    
-                    // 2. Cabeçalho (Título, Autor e Tempo)
                     VStack(alignment: .leading, spacing: 8) {
                         Text(recipe.recipe_name ?? "Receita sem título")
                             .font(.largeTitle)
                             .fontWeight(.bold)
-                        
                         HStack {
                             Text("Por: \(recipe.user_name ?? "Desconhecido")")
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
-                            
                             Spacer()
-                            
                             if let time = recipe.preparation_time {
                                 Label("\(time) min", systemImage: "clock")
                                     .font(.subheadline)
-                                    .foregroundColor(.secondary)
-                            }
-                        }
-                    }
-                    
+                                .foregroundColor(.secondary)}}}
                     Divider()
-                    
-                    // 3. Descrição
                     if let description = recipe.recipe_description {
                         Text(description)
                             .font(.body)
-                            .foregroundColor(.primary)
-                    }
-                    
-                    // 4. Ingredientes
+                        .foregroundColor(.primary)}
                     if let ingredients = recipe.ingredients, !ingredients.isEmpty {
                         VStack(alignment: .leading, spacing: 10) {
                             Text("Ingredientes")
                                 .font(.title2)
                                 .fontWeight(.bold)
-                            
                             ForEach(ingredients, id: \.self) { ingredient in
                                 HStack(alignment: .top) {
                                     Image(systemName: "circle.fill")
@@ -90,45 +76,37 @@ struct RecipeView: View {
                                         .padding(.top, 8)
                                         .foregroundColor(.orange)
                                     Text(ingredient)
-                                        .font(.body)
-                                }
-                            }
-                        }
-                    }
-                    
-                    // 5. Modo de Preparo
+                                    .font(.body)}}}}
                     if let method = recipe.preparation_method {
                         VStack(alignment: .leading, spacing: 10) {
                             Text("Modo de Preparo")
                                 .font(.title2)
                                 .fontWeight(.bold)
-                            
                             Text(method)
-                                .font(.body)
-                        }
-                    }
-                    
-                }
-                .padding()
+                            .font(.body)}}}
+                
+                
+                
+                
             }
+            .padding()
         }
         .navigationBarTitleDisplayMode(.inline)
-        // Adicionando o botão de três pontos na Toolbar
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                // Validação: Só aparece se o user_name for igual ao logged_user_name
+                // Validação: Só aparece se o user_name for igual ao dono da receita
                 if recipe.user_name == logged_user_name {
                     Menu {
                         Button(action: {
-                            // Lógica para abrir tela de edição
-                            print("Editar selecionado")
+                            // AQUI: Mudamos de um print para alterar o estado da sheet
+                            showingEditSheet = true
                         }) {
                             Label("Editar", systemImage: "pencil")
                         }
                         
                         Button(role: .destructive, action: {
                             viewModel.delete(recipe: recipe)
-                            dismiss() // Volta para a tela anterior após deletar
+                            dismiss()
                         }) {
                             Label("Deletar", systemImage: "trash")
                         }
@@ -139,5 +117,11 @@ struct RecipeView: View {
                 }
             }
         }
+        // AQUI: Adicionamos o modificador que abre a tela de edição
+        .sheet(isPresented: $showingEditSheet) {
+            // Passamos a viewModel e a receita atual
+            EditRecipeView(viewModel: viewModel, recipe: recipe)
+        }
     }
+    
 }
