@@ -36,8 +36,7 @@ struct RecipesService {
     }
 
     func updateRecipe(recipe: Recipes, url: URL) -> AnyPublisher<Data, Error> {
-        let updateURL = url.appendingPathComponent(recipe.id)
-        var request = URLRequest(url: updateURL)
+        var request = URLRequest(url: url)
         request.httpMethod = "PUT"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         

@@ -34,8 +34,7 @@ struct UserService {
     }
 
     func updateUser(user: User, url: URL) -> AnyPublisher<Data, Error> {
-        let updateURL = url.appendingPathComponent(user.id)
-        var request = URLRequest(url: updateURL)
+        var request = URLRequest(url: url)
         request.httpMethod = "PUT"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
