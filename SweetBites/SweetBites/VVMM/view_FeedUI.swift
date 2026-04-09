@@ -59,17 +59,21 @@ struct FeedUIView: View {
     // Função para lidar com os votos e atualizar a API
     private func vote(recipe: Recipes, isUpvote: Bool, user_id: String) {
         var updatedRecipe: Recipes = recipe
+        var isUpdated = false
         
         if recipe.upvote?.contains(user_id) == false && isUpvote {
             updatedRecipe.upvote?.append(user_id)
+            isUpdated = true
         }
         else if recipe.downvote?.contains(user_id) == false && isUpvote == false {
             updatedRecipe.downvote?.append(user_id)
+            isUpdated = true
         }
         
-        viewModel.put(recipe: recipe)
-        
-        viewModel.fetch()
+        if isUpdated {
+            viewModel.put(recipe: recipe)
+            viewModel.fetch()
+        }
     }
 }
 
