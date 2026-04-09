@@ -72,12 +72,12 @@ struct UserService {
 struct User: Codable, Identifiable {
     let id: String
     let rev: String?
-    let user_name: String?
-    let user_image_url: String?
-    let user_description: String?
+    var user_name: String?
+    var user_image_url: String?
+    var user_description: String?
     let user_recipes: [String]?
-    let rt_recipes: [String]?
-    let save_recipes: [String]?
+    var rt_recipes: [String]?
+    var save_recipes: [String]?
     
     
     enum CodingKeys: String, CodingKey {

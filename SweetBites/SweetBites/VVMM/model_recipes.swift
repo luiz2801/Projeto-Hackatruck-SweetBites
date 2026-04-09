@@ -76,8 +76,6 @@ struct RecipesService {
 struct Recipes: Codable, Identifiable {
     let id: String
     let rev: String?
-    
-    // Transforme os campos que podem ser editados no app em 'var'
     var recipe_name: String?
     var user_name: String?
     var recipe_image_url: String?
@@ -85,14 +83,11 @@ struct Recipes: Codable, Identifiable {
     var ingredients: [String]?
     var preparation_method: String?
     var preparation_time: Int?
-    
-    // Os demais podem continuar como 'let' se não mudarem na edição,
-    // ou 'var' como já estão.
-    let category: [Int]?
+    var category: [Int]?
     var upvote: [String]?
     var downvote: [String]?
-    let comments: [Comments]?
-    let save_counter: Int?
+    var comments: [Comments]?
+    var save_counter: Int?
 
     enum CodingKeys: String, CodingKey {
         case id = "_id"
@@ -103,7 +98,7 @@ struct Recipes: Codable, Identifiable {
 
 struct Comments: Codable, Hashable {
     let user_id: String?
-    let comment: String?
+    var comment: String?
     
     enum CodingKeys: String, CodingKey {
         case user_id = "_id"
