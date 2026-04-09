@@ -42,7 +42,7 @@ struct ProfileUIView: View {
                         // MARK: - Área do Usuário (Chef)
                         HStack(alignment: .top, spacing: 15) {
                             
-                            AsyncImage(url: URL(string: "https://api.dicebear.com/7.x/avataaars/svg?seed=Chef")) { image in
+                            AsyncImage(url: URL(string: "https://universodenegocios.com.br/wp-content/uploads/2023/03/COOKER.jpg")) { image in
                                 image.resizable()
                             } placeholder: {
                                 ProgressView()

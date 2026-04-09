@@ -36,7 +36,8 @@ struct FeedUIView: View {
                                     RecipeCardView(
                                         recipe: recipe,
                                         onUpvote: { vote(recipe: recipe, isUpvote: true, user_id: user_id) },
-                                        onDownvote: { vote(recipe: recipe, isUpvote: false, user_id: user_id) }
+                                        onDownvote: { vote(recipe: recipe, isUpvote: false, user_id: user_id) },
+                                        user_id: user_id
                                     )
                                 }
                                 .buttonStyle(PlainButtonStyle())
@@ -56,37 +57,57 @@ struct FeedUIView: View {
         }
     }
     
-    // Função para lidar com os votos e atualizar a API
     private func vote(recipe: Recipes, isUpvote: Bool, user_id: String) {
         var updatedRecipe: Recipes = recipe
         var isUpdated = false
         
-        if recipe.upvote?.contains(user_id) == false && isUpvote {
-            updatedRecipe.upvote?.append(user_id)
+        var upvotes = updatedRecipe.upvote ?? []
+        var downvotes = updatedRecipe.downvote ?? []
+        
+        let hasUpvoted = upvotes.contains(user_id)
+        let hasDownvoted = downvotes.contains(user_id)
+        
+        if isUpvote {
+            if hasUpvoted {
+                upvotes.removeAll { $0 == user_id }
+            } else {
+                upvotes.append(user_id)
+                downvotes.removeAll { $0 == user_id }
+            }
             isUpdated = true
-        }
-        else if recipe.downvote?.contains(user_id) == false && isUpvote == false {
-            updatedRecipe.downvote?.append(user_id)
+        } else {
+            if hasDownvoted {
+                downvotes.removeAll { $0 == user_id }
+            } else {
+                downvotes.append(user_id)
+                upvotes.removeAll { $0 == user_id }
+            }
             isUpdated = true
         }
         
         if isUpdated {
+            updatedRecipe.upvote = upvotes
+            updatedRecipe.downvote = downvotes
+            
+            if let index = viewModel.recipes.firstIndex(where: { $0.id == recipe.id }) {
+                viewModel.recipes[index] = updatedRecipe
+            }
+            
             viewModel.put(recipe: updatedRecipe)
-            print(recipe)
         }
     }
 }
 
-// Subcomponente para exibir cada receita individualmente
 struct RecipeCardView: View {
     let recipe: Recipes
-    var onUpvote: () -> Void    // Ação para o upvote
-    var onDownvote: () -> Void  // Ação para o downvote
+    var onUpvote: () -> Void
+    var onDownvote: () -> Void
+    
+    let user_id: String
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             
-            // Tenta carregar a imagem da receita
             if let imageUrlString = recipe.recipe_image_url, let url = URL(string: imageUrlString) {
                 AsyncImage(url: url) { phase in
                     switch phase {
@@ -129,15 +150,18 @@ struct RecipeCardView: View {
             
             // Rodapé do Card (Upvotes e Tempo)
             HStack {
-                // Cálculo do delta de upvote e downvote
                 let upvotes = recipe.upvote?.count ?? 0
                 let downvotes = recipe.downvote?.count ?? 0
                 let totalVotes = upvotes - downvotes
                 
+                // NOVO: Verifica se o usuário atual votou nesta receita
+                let hasUpvoted = recipe.upvote?.contains(user_id) ?? false
+                let hasDownvoted = recipe.downvote?.contains(user_id) ?? false
+                
                 HStack(spacing: 12) {
-                    // Botão de Upvote (Usando onTapGesture para não conflitar com o NavigationLink)
-                    Image(systemName: "arrow.up.circle.fill")
-                        .foregroundColor(.green)
+                    // Botão de Upvote
+                    Image(systemName: hasUpvoted ? "arrow.up.circle.fill" : "arrow.up.circle")
+                        .foregroundColor(hasUpvoted ? .green : .gray) // Verde se votou, cinza se não
                         .font(.title3)
                         .onTapGesture {
                             onUpvote()
@@ -147,8 +171,8 @@ struct RecipeCardView: View {
                         .fontWeight(.bold)
                     
                     // Botão de Downvote
-                    Image(systemName: "arrow.down.circle.fill")
-                        .foregroundColor(.red)
+                    Image(systemName: hasDownvoted ? "arrow.down.circle.fill" : "arrow.down.circle")
+                        .foregroundColor(hasDownvoted ? .red : .gray) // Vermelho se votou, cinza se não
                         .font(.title3)
                         .onTapGesture {
                             onDownvote()
