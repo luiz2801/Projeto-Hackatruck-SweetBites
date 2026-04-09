@@ -7,12 +7,13 @@ import SwiftUI
 
 struct FeedUIView: View {
     @StateObject private var viewModel = RecipesViewModel()
+    let user_id: String = "e5a0d91f78505a60b4034c803015cf56"
     
     // Propriedade computada para ordenar as receitas do maior para o menor saldo de votos
     var sortedRecipes: [Recipes] {
         viewModel.recipes.sorted {
-            let scoreA = ($0.upvote ?? 0) - ($0.downvote ?? 0)
-            let scoreB = ($1.upvote ?? 0) - ($1.downvote ?? 0)
+            let scoreA = ($0.upvote?.count ?? 0) - ($0.downvote?.count ?? 0)
+            let scoreB = ($1.upvote?.count ?? 0) - ($1.downvote?.count ?? 0)
             return scoreA > scoreB
         }
     }
@@ -34,8 +35,8 @@ struct FeedUIView: View {
                                 NavigationLink(destination: RecipeView(recipe: recipe)) {
                                     RecipeCardView(
                                         recipe: recipe,
-                                        onUpvote: { vote(recipe: recipe, isUpvote: true) },
-                                        onDownvote: { vote(recipe: recipe, isUpvote: false) }
+                                        onUpvote: { vote(recipe: recipe, isUpvote: true, user_id: user_id) },
+                                        onDownvote: { vote(recipe: recipe, isUpvote: false, user_id: user_id) }
                                     )
                                 }
                                 .buttonStyle(PlainButtonStyle())
@@ -56,22 +57,19 @@ struct FeedUIView: View {
     }
     
     // Função para lidar com os votos e atualizar a API
-    private func vote(recipe: Recipes, isUpvote: Bool) {
-        var updatedRecipe = recipe
+    private func vote(recipe: Recipes, isUpvote: Bool, user_id: String) {
+        var updatedRecipe: Recipes = recipe
         
-        if isUpvote {
-            updatedRecipe.upvote = (recipe.upvote ?? 0) + 1
-        } else {
-            updatedRecipe.downvote = (recipe.downvote ?? 0) + 1
+        if recipe.upvote?.contains(user_id) == false && isUpvote {
+            updatedRecipe.upvote?.append(user_id)
+        }
+        else if recipe.downvote?.contains(user_id) == false && isUpvote == false {
+            updatedRecipe.downvote?.append(user_id)
         }
         
-        // Atualiza a UI imediatamente (Optimistic UI update) para parecer instantâneo ao usuário
-        if let index = viewModel.recipes.firstIndex(where: { $0.id == recipe.id }) {
-            viewModel.recipes[index] = updatedRecipe
-        }
+        viewModel.put(recipe: recipe)
         
-        // Envia a atualização para o backend
-        viewModel.put(recipe: updatedRecipe)
+        viewModel.fetch()
     }
 }
 
@@ -128,8 +126,8 @@ struct RecipeCardView: View {
             // Rodapé do Card (Upvotes e Tempo)
             HStack {
                 // Cálculo do delta de upvote e downvote
-                let upvotes = recipe.upvote ?? 0
-                let downvotes = recipe.downvote ?? 0
+                let upvotes = recipe.upvote?.count ?? 0
+                let downvotes = recipe.downvote?.count ?? 0
                 let totalVotes = upvotes - downvotes
                 
                 HStack(spacing: 12) {
