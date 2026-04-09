@@ -71,7 +71,7 @@ struct FeedUIView: View {
         }
         
         if isUpdated {
-            viewModel.put(recipe: recipe)
+            viewModel.put(recipe: updatedRecipe)
             print(recipe)
         }
     }
