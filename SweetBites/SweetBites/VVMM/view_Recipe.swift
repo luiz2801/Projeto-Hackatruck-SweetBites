@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 struct RecipeView: View {
     @StateObject var viewModel = RecipesViewModel()
     @Environment(\.dismiss) var dismiss
@@ -20,8 +19,6 @@ struct RecipeView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                // ... (Seu código da imagem, cabeçalho, descrição, etc. continua igual) ...
-                
                 // 1. Imagem de Destaque
                 if let imageUrlString = recipe.recipe_image_url, let url = URL(string: imageUrlString) {
                     AsyncImage(url: url) { phase in
@@ -58,12 +55,19 @@ struct RecipeView: View {
                             if let time = recipe.preparation_time {
                                 Label("\(time) min", systemImage: "clock")
                                     .font(.subheadline)
-                                .foregroundColor(.secondary)}}}
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                    }
+                    
                     Divider()
+                    
                     if let description = recipe.recipe_description {
                         Text(description)
                             .font(.body)
-                        .foregroundColor(.primary)}
+                            .foregroundColor(.primary)
+                    }
+                    
                     if let ingredients = recipe.ingredients, !ingredients.isEmpty {
                         VStack(alignment: .leading, spacing: 10) {
                             Text("Ingredientes")
@@ -76,29 +80,72 @@ struct RecipeView: View {
                                         .padding(.top, 8)
                                         .foregroundColor(.orange)
                                     Text(ingredient)
-                                    .font(.body)}}}}
+                                        .font(.body)
+                                }
+                            }
+                        }
+                    }
+                    
                     if let method = recipe.preparation_method {
                         VStack(alignment: .leading, spacing: 10) {
                             Text("Modo de Preparo")
                                 .font(.title2)
                                 .fontWeight(.bold)
                             Text(method)
-                            .font(.body)}}}
-                
-                
-                
-                
+                                .font(.body)
+                        }
+                    }
+                    
+                    // MARK: - NOVA SEÇÃO: Comentários
+                    Divider()
+                        .padding(.vertical, 10)
+                    
+                    VStack(alignment: .leading, spacing: 15) {
+                        Text("Comentários")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                        
+                        if let comments = recipe.comments, !comments.isEmpty {
+                            ForEach(comments, id: \.self) { comentario in
+                                VStack(alignment: .leading, spacing: 6) {
+                                    HStack {
+                                        Image(systemName: "person.circle.fill")
+                                            .foregroundColor(.gray)
+                                        // Como temos apenas o user_id, exibimos os 6 primeiros caracteres para não ficar gigante
+                                        Text("Usuário: \(String((comentario.user_id ?? "Anônimo").prefix(6)))")
+                                            .font(.caption)
+                                            .fontWeight(.bold)
+                                            .foregroundColor(.secondary)
+                                    }
+                                    
+                                    Text(comentario.comment ?? "")
+                                        .font(.body)
+                                        .foregroundColor(.primary)
+                                }
+                                .padding()
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(Color.gray.opacity(0.1))
+                                .cornerRadius(12)
+                            }
+                        } else {
+                            Text("Nenhum comentário ainda. Seja o primeiro a comentar pelo Feed!")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                                .italic()
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .padding(.top, 10)
+                        }
+                    }
+                }
+                .padding()
             }
-            .padding()
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                // Validação: Só aparece se o user_name for igual ao dono da receita
                 if recipe.user_name == logged_user_name {
                     Menu {
                         Button(action: {
-                            // AQUI: Mudamos de um print para alterar o estado da sheet
                             showingEditSheet = true
                         }) {
                             Label("Editar", systemImage: "pencil")
@@ -117,11 +164,8 @@ struct RecipeView: View {
                 }
             }
         }
-        // AQUI: Adicionamos o modificador que abre a tela de edição
         .sheet(isPresented: $showingEditSheet) {
-            // Passamos a viewModel e a receita atual
             EditRecipeView(viewModel: viewModel, recipe: recipe)
         }
     }
-    
 }

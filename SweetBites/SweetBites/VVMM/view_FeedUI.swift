@@ -18,6 +18,23 @@ struct FeedUIView: View {
         }
     }
     
+    private func adicionarComentario(recipe: Recipes, texto: String, user_id: String) {
+        var updatedRecipe: Recipes = recipe
+        
+        let novoComentarioObj = Comments(user_id: user_id, comment: texto)
+        
+        if updatedRecipe.comments == nil {
+            updatedRecipe.comments = [novoComentarioObj]
+        } else {
+            updatedRecipe.comments?.append(novoComentarioObj)
+        }
+        
+        if let index = viewModel.recipes.firstIndex(where: { $0.id == recipe.id }) {
+            viewModel.recipes[index] = updatedRecipe
+        }
+        viewModel.put(recipe: updatedRecipe)
+    }
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -37,6 +54,10 @@ struct FeedUIView: View {
                                         recipe: recipe,
                                         onUpvote: { vote(recipe: recipe, isUpvote: true, user_id: user_id) },
                                         onDownvote: { vote(recipe: recipe, isUpvote: false, user_id: user_id) },
+                                        onComment: {
+                                            textoDigitado in
+                                            adicionarComentario(recipe: recipe, texto: textoDigitado, user_id: user_id)
+                                        },
                                         user_id: user_id
                                     )
                                 }
@@ -102,8 +123,11 @@ struct RecipeCardView: View {
     let recipe: Recipes
     var onUpvote: () -> Void
     var onDownvote: () -> Void
+    var onComment: (String) -> Void
     
     let user_id: String
+    
+    @State private var novoComentario: String = ""
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -179,6 +203,24 @@ struct RecipeCardView: View {
                         }
                 }
                 
+                Divider()
+                    .padding(.vertical, 5)
+                
+                HStack {
+                    TextField("Adicionar comentário...", text: $novoComentario)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .font(.subheadline)
+                    
+                    Button(action: {
+                        // Impede o envio de comentários vazios
+                        guard !novoComentario.trimmingCharacters(in: .whitespaces).isEmpty else { return }
+                        onComment(novoComentario)
+                        novoComentario = "" // Limpa o campo após o envio
+                    }) {
+                        Image(systemName: "paperplane.fill")
+                            .foregroundColor(.pink)
+                    }
+                }
                 Spacer()
                 
                 if let time = recipe.preparation_time {
