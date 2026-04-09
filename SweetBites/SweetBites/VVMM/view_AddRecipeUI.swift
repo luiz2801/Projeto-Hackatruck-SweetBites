@@ -16,7 +16,8 @@ struct AddRecipeUIView: View {
     @State private var ingredientes: String = ""
     @State private var modoPreparo: String = ""
     @State private var recipeDescription: String = ""
-    @State private var urlImagemReceita: String = "" // NOVO: Para receber a URL em texto
+    @State private var urlImagemReceita: String = ""
+    @State private var tempoPreparo: String = ""
     @State private var categoriaDoce: Bool = false
     @State private var categoriaRefeicao: Bool = false
     @State private var categoriaLanche: Bool = false
@@ -156,6 +157,23 @@ struct AddRecipeUIView: View {
                 .padding(.horizontal, 20)
                 .padding(.top, 10)
                 
+                // MARK: - Tempo de Preparo
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Tempo de Preparo (minutos)")
+                        .font(.caption)
+                        .bold()
+                        .foregroundStyle(.gray)
+                    
+                    TextField("Ex: 40", text: $tempoPreparo)
+                        .keyboardType(.numberPad) // Força o teclado numérico
+                        .padding()
+                        .background(Color.white)
+                        .cornerRadius(12)
+                        .shadow(color: .gray.opacity(0.1), radius: 3)
+                }
+                .padding(.horizontal, 20)
+                .padding(.top, 10)
+                
                 // MARK: - Descrição
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Descrição")
@@ -237,7 +255,7 @@ struct AddRecipeUIView: View {
             recipe_description: recipeDescription,
             ingredients: arrayIngredientes,
             preparation_method: modoPreparo,
-            preparation_time: 40,
+            preparation_time: Int(tempoPreparo) ?? 0,
             category: categoriasEscolhidas,
             upvote: [""],
             downvote: [""],

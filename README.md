@@ -35,5 +35,4 @@
 
 TO-DO:
 
-- [ ] Adicionar o campo tempo de preparo ao AddRecipesUI - Júlio. Coisa simples.
 - [ ] Adicionar o campo Comentar.
