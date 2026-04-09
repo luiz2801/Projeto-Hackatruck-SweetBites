@@ -76,15 +76,20 @@ struct RecipesService {
 struct Recipes: Codable, Identifiable {
     let id: String
     let rev: String?
-    let recipe_name: String?
-    let user_name: String?
-    let recipe_image_url: String?
-    let recipe_description: String?
-    let ingredients: [String]?
-    let preparation_method: String?
-    let preparation_time: Int? // O tempo é em minutos.
-    let category: [Int]? //Uma receita pode ser categorizada como refeição e um lanche, por exemplo
-    var upvote: [String]? // O que vai ser exibido é o delta de upvote e downvote.
+    
+    // Transforme os campos que podem ser editados no app em 'var'
+    var recipe_name: String?
+    var user_name: String?
+    var recipe_image_url: String?
+    var recipe_description: String?
+    var ingredients: [String]?
+    var preparation_method: String?
+    var preparation_time: Int?
+    
+    // Os demais podem continuar como 'let' se não mudarem na edição,
+    // ou 'var' como já estão.
+    let category: [Int]?
+    var upvote: [String]?
     var downvote: [String]?
     let comments: [Comments]?
     let save_counter: Int?

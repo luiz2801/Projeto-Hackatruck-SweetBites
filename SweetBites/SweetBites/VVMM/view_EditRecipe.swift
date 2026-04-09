@@ -33,7 +33,6 @@ struct EditRecipeView: View {
     var body: some View {
         NavigationView {
             Form {
-                // ... (O resto da sua UI do Form continua exatamente igual) ...
                 Section(header: Text("Informações Básicas")) {
                     TextField("Nome da Receita", text: $recipeName)
                     TextField("URL da Imagem", text: $imageUrl)
@@ -86,26 +85,21 @@ struct EditRecipeView: View {
     }
     
     private func saveRecipe() {
-        let updatedRecipe = Recipes(
-            id: originalRecipe.id,
-            rev: originalRecipe.rev,
-            recipe_name: recipeName.isEmpty ? nil : recipeName,
-            user_name: originalRecipe.user_name,
-            recipe_image_url: imageUrl.isEmpty ? nil : imageUrl,
-            recipe_description: recipeDescription.isEmpty ? nil : recipeDescription,
-            ingredients: ingredients.filter { !$0.isEmpty },
-            preparation_method: preparationMethod.isEmpty ? nil : preparationMethod,
-            preparation_time: Int(preparationTime),
-            category: originalRecipe.category,
-            upvote: originalRecipe.upvote,
-            downvote: originalRecipe.downvote,
-            comments: originalRecipe.comments,
-            save_counter: originalRecipe.save_counter
-        )
+        // 1. Criamos uma cópia mutável da receita original (mantém _id, _rev, etc.)
+        var updatedRecipe: Recipes = originalRecipe
         
-        // AQUI: Chamamos o método put() da sua ViewModel
+        // 2. Atualizamos apenas os campos que podem ser editados no formulário
+        updatedRecipe.recipe_name = recipeName.isEmpty ? nil : recipeName
+        updatedRecipe.recipe_image_url = imageUrl.isEmpty ? nil : imageUrl
+        updatedRecipe.recipe_description = recipeDescription.isEmpty ? nil : recipeDescription
+        updatedRecipe.ingredients = ingredients.filter { !$0.isEmpty }
+        updatedRecipe.preparation_method = preparationMethod.isEmpty ? nil : preparationMethod
+        updatedRecipe.preparation_time = Int(preparationTime)
+        
+        // 3. Enviamos a receita atualizada para a ViewModel (que fará o PUT)
         viewModel.put(recipe: updatedRecipe)
         
+        // 4. Fechamos a folha de edição
         dismiss()
     }
 }
